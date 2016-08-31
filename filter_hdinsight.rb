@@ -1,15 +1,28 @@
 module Fluent
   require_relative 'omslog'
+  require_relative 'oms_common'
   require 'json'
+  require 'open3'
+
 
   class HdinsightFilter < Filter
     Fluent::Plugin.register_filter('filter_hdinsight', self)
 
-    config_param :clustername, :string
-    config_param :clustertype, :string
+    BASE_DIR = File.dirname(File.expand_path('..', __FILE__))
+    RUBY_DIR = BASE_DIR + '/ruby/bin/ruby '
+    TAILSCRIPT = BASE_DIR + '/bin/hdinsightmanifestreader.rb '
 
-    def configure(conf)
+  def configure(conf)
       super
+      @hostname = OMS::Common.get_hostname or "Unknown host"
+      @command = "sudo " << RUBY_DIR << TAILSCRIPT
+      @clustername = ""
+      Open3.popen3(@command) {|stdin, stdout, stderr, wait_thr|
+          pid = wait_thr.pid
+          stdin.close
+          @clustername = stdout.read
+          wait_thr.value
+      }
     end
 
     def start
@@ -21,8 +34,8 @@ module Fluent
     end
 
     def filter(tag, time, record)
-      record["ClusterName"]=@clustername
-      record["ClusterType"]=@clustertype
+      record["ClusterName"] = @clustername
+      record["HostName"] = @hostname
       record
     end
   end
