@@ -3,5 +3,7 @@ sudo wget https://github.com/Microsoft/OMS-Agent-for-Linux/releases/download/OMS
 sudo sh /tmp/omsagent.x64.sh --upgrade -w $1 -s $2
 sudo wget -O /opt/microsoft/omsagent/plugin/filter_hdinsight.rb https://raw.githubusercontent.com/ashishthaps/hdinsightoms/master/filter_hdinsight.rb
 sudo wget -O /etc/opt/microsoft/omsagent/conf/omsagent.d/hbase.conf https://raw.githubusercontent.com/ashishthaps/hdinsightoms/master/hbase.conf
+sudo wget -O /etc/opt/microsoft/omsagent/plugin/hdinsightmanifestreader.rb https://raw.githubusercontent.com/ashishthaps/darfo/master/hdinsightmanifestreader.rb
+
 sudo service omsagent restart
 
