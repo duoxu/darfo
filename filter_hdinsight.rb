@@ -10,12 +10,12 @@ module Fluent
 
     BASE_DIR = File.dirname(File.expand_path('..', __FILE__))
     RUBY_DIR = BASE_DIR + '/ruby/bin/ruby '
-    TAILSCRIPT = BASE_DIR + '/bin/hdinsightmanifestreader.rb '
+    SCRIPT = BASE_DIR + '/bin/hdinsightmanifestreader.rb '
 
   def configure(conf)
       super
       @hostname = OMS::Common.get_hostname or "Unknown host"
-      @command = "sudo " << RUBY_DIR << TAILSCRIPT
+      @command = "sudo " << RUBY_DIR << SCRIPT
       @clustername = ""
       Open3.popen3(@command) {|stdin, stdout, stderr, wait_thr|
           pid = wait_thr.pid
